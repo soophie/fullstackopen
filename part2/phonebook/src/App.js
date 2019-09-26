@@ -1,0 +1,62 @@
+import React, {useState} from 'react';
+import './App.css';
+
+import Filter from './components/Filter'
+import PersonForm from './components/PersonForm'
+import Persons from './components/Persons'
+
+const App = () => {
+  const [persons, setPersons] = useState([
+    { name: 'Arto Hellas', number: '040-123456' },
+    { name: 'Ada Lovelace', number: '39-44-5323523' },
+    { name: 'Dan Abramov', number: '12-43-234345' },
+    { name: 'Mary Poppendieck', number: '39-23-6423122' }
+  ])
+  const [newName, setNewName] = useState('');
+  const [newNumber, setNewNumber] = useState('');
+  const addName = (event) => {
+    event.preventDefault()
+    const doublette = persons.filter(person => person.name === newName);
+    if (doublette.length > 0) {
+      window.alert(`${newName} is already added to phonebook`)
+      return false
+    }
+    const personObject = {
+      name: newName,
+      number: newNumber
+    }
+    setPersons(persons.concat(personObject));
+    setNewName('')
+    setNewNumber('')
+  }
+  const addNewName = (event) => 
+    setNewName(event.target.value)
+  
+  const addNewNumber = (event) =>
+    setNewNumber(event.target.value)
+
+  const [filter, setFilter] = useState('')
+  const handleFilter = (event) => {
+    setFilter(event.target.value)
+  }
+  const filtered = filter ? persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase())) : persons 
+  
+  return (
+    <div>
+      <h1>Phonebook</h1>
+      <Filter filter={filter} onChange={handleFilter} />
+      <h2>Add new entry</h2>
+      <PersonForm 
+        onSubmit={addName} 
+        name={newName} 
+        number={newNumber} 
+        onNameChange={addNewName} 
+        onNumberChange={addNewNumber} 
+      />
+      <h2>Numbers</h2>
+      <Persons persons={filtered} />
+    </div>
+  )
+}
+
+export default App;
