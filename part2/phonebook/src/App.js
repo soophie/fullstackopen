@@ -1,11 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import './App.css';
-import axios from 'axios'
 
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 import Notification from './components/Notification'
+
+import phonebookService from './services/phonebook';
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -14,9 +15,11 @@ const App = () => {
   const [message, setMessage] = useState(null);
 
   useEffect(() => {
-    axios.get('http://localhost:1337/persons').then(response => {
-      setPersons(response.data)
-    })
+    phonebookService
+      .getAll()
+      .then(initialPersons => {
+        setPersons(initialPersons)
+      })
   }, [])
   const addName = (event) => {
     event.preventDefault()
@@ -35,9 +38,14 @@ const App = () => {
       name: newName,
       number: newNumber
     }
-    setPersons(persons.concat(personObject));
-    setNewName('')
-    setNewNumber('')
+    phonebookService
+      .create(personObject)
+      .then(returnedPerson => {
+        setPersons(persons.concat(returnedPerson));
+        setNewName('')
+        setNewNumber('')
+      })
+    
   }
   const addNewName = (event) => 
     setNewName(event.target.value)
@@ -51,6 +59,19 @@ const App = () => {
   }
   const filtered = filter ? persons.filter(person => person.name.toLowerCase().includes(filter.toLowerCase())) : persons 
   
+  const removePersonOf = (person) => {
+    const confirmDialog = window.confirm(`Are you sure you want to delete ${person.name}?`)
+    if (confirmDialog) {
+      phonebookService.remove(person.id).then(response => {
+        setPersons(persons.filter(p => p.id !== person.id))
+        setMessage(`Successfully deleted ${person.name}`)
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000)
+      })
+    }
+    
+  }
   return (
     <div>
       <h1>Phonebook</h1>
@@ -65,7 +86,7 @@ const App = () => {
         onNumberChange={addNewNumber} 
       />
       <h2>Numbers</h2>
-      <Persons persons={filtered} />
+      <Persons persons={filtered} removePerson={removePersonOf} />
     </div>
   )
 }
