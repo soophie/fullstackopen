@@ -31,11 +31,16 @@ const App = () => {
     if (doublette.length > 0) {
       const updateDialog = window.confirm(`${newName} is already added to phonebook. Do you want to update the number?`)
       if (updateDialog) {
-        phonebookService.update(doublette[0].id, personObject).then(response => {
-          setPersons(persons.map(person => (person.name === newName) ? response : person));
-          setMessage(`Successfully updated ${newName}`)
-          setTimeout(() => {setMessage(null)}, 5000)
-        })
+        phonebookService
+          .update(doublette[0].id, personObject)
+          .then(response => {
+            setPersons(persons.map(person => (person.name === newName) ? response : person));
+            setMessage(`Successfully updated ${newName}`)
+            setTimeout(() => {setMessage(null)}, 5000)
+          })
+          .catch(error => {
+            setMessage(`Information of ${newName} already removed from server`);
+          })
       }
       return false
     }
@@ -70,13 +75,15 @@ const App = () => {
   const removePersonOf = (person) => {
     const confirmDialog = window.confirm(`Are you sure you want to delete ${person.name}?`)
     if (confirmDialog) {
-      phonebookService.remove(person.id).then(response => {
-        setPersons(persons.filter(p => p.id !== person.id))
-        setMessage(`Successfully deleted ${person.name}`)
-        setTimeout(() => {
-          setMessage(null)
-        }, 5000)
-      })
+      phonebookService
+        .remove(person.id)
+        .then(response => {
+          setPersons(persons.filter(p => p.id !== person.id))
+          setMessage(`Successfully deleted ${person.name}`)
+          setTimeout(() => {
+            setMessage(null)
+          }, 5000)
+        })
     }
     
   }
