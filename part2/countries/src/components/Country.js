@@ -1,17 +1,20 @@
-import React from 'react';
+import React, {useState} from 'react';
 
-const Country = ({country}) => {
-    return (
+const CountryDetails = ({country, show, setShow}) => {
+    [show, setShow] = useState(show);
+    return show ?
         <>
-        <h1>{country.name}</h1>
-        <p>Capital: {country.capital}</p>
-        <p>Population: {country.population}</p>
-        <h2>Languages</h2>
-        <ul>
-            {country.languages.map((language, index) => <li key={index}>{language.name}</li>)}
-        </ul>
-        <img src={country.flag} alt="Flag" width="100" />
+            <h1>{country.name}</h1>
+            <p>Capital: {country.capital}</p>
+            <p>Population: {country.population}</p>
+            <h2>Languages</h2>
+            <ul>
+                {country.languages.map((language, index) => <li key={index}>{language.name}</li>)}
+            </ul>
+            <img src={country.flag} alt="Flag" width="100" />
         </>
-    )
+        :
+        <p>{country.name} <button onClick={() => setShow(!show)}>show</button></p>
+    
 }
-export default Country
+export default CountryDetails

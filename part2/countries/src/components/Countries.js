@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Country from './Country';
+import CountryDetails from './Country';
 
 const Countries = ({countries, filter}) => {
     const filtered = filter ? countries.filter(country => country.name.toLowerCase().includes(filter.toLowerCase())) : null;
@@ -9,12 +9,12 @@ const Countries = ({countries, filter}) => {
     }
     
     if (filtered.length === 1) {
-      return filtered.map((country) => <Country key={country.name} country={country} />)
+      return filtered.map((country) => <CountryDetails key={country.name} country={country} show={true} />)
     }
 
     return (
       <>
-        {filtered.map((country, index) => <p key={index}>{country.name}</p>)}
+        {filtered.map((country, index) => <CountryDetails key={country.name} country={country} show={false} />)}
       </>
     )
   }
