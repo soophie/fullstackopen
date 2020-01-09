@@ -23,9 +23,20 @@ const App = () => {
   }, [])
   const addName = (event) => {
     event.preventDefault()
+    const personObject = {
+      name: newName,
+      number: newNumber
+    }
     const doublette = persons.filter(person => person.name === newName);
     if (doublette.length > 0) {
-      window.alert(`${newName} is already added to phonebook`)
+      const updateDialog = window.confirm(`${newName} is already added to phonebook. Do you want to update the number?`)
+      if (updateDialog) {
+        phonebookService.update(doublette[0].id, personObject).then(response => {
+          setPersons(persons.map(person => (person.name === newName) ? response : person));
+          setMessage(`Successfully updated ${newName}`)
+          setTimeout(() => {setMessage(null)}, 5000)
+        })
+      }
       return false
     }
     setMessage(
@@ -34,10 +45,7 @@ const App = () => {
     setTimeout(() => {
       setMessage(null)
     }, 5000)
-    const personObject = {
-      name: newName,
-      number: newNumber
-    }
+    
     phonebookService
       .create(personObject)
       .then(returnedPerson => {
