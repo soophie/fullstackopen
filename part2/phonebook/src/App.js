@@ -5,15 +5,16 @@ import axios from 'axios'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
+import Notification from './components/Notification'
 
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newName, setNewName] = useState('');
   const [newNumber, setNewNumber] = useState('');
+  const [message, setMessage] = useState(null);
 
   useEffect(() => {
     axios.get('http://localhost:1337/persons').then(response => {
-
       setPersons(response.data)
     })
   }, [])
@@ -24,6 +25,12 @@ const App = () => {
       window.alert(`${newName} is already added to phonebook`)
       return false
     }
+    setMessage(
+      `Added ${newName}`
+    )
+    setTimeout(() => {
+      setMessage(null)
+    }, 5000)
     const personObject = {
       name: newName,
       number: newNumber
@@ -47,6 +54,7 @@ const App = () => {
   return (
     <div>
       <h1>Phonebook</h1>
+      <Notification message={message} />
       <Filter filter={filter} onChange={handleFilter} />
       <h2>Add new entry</h2>
       <PersonForm 
