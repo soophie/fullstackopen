@@ -4,7 +4,6 @@ import Weather from './Weather';
 
 const CountryDetails = ({country, show, setShow}) => {
     [show, setShow] = useState(show);
-    console.log(country);
     return show ?
         <>
             <h1>{country.name}</h1>
