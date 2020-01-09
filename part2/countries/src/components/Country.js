@@ -1,7 +1,10 @@
 import React, {useState} from 'react';
 
+import Weather from './Weather';
+
 const CountryDetails = ({country, show, setShow}) => {
     [show, setShow] = useState(show);
+    console.log(country);
     return show ?
         <>
             <h1>{country.name}</h1>
@@ -12,6 +15,7 @@ const CountryDetails = ({country, show, setShow}) => {
                 {country.languages.map((language, index) => <li key={index}>{language.name}</li>)}
             </ul>
             <img src={country.flag} alt="Flag" width="100" />
+            {country.capital && <Weather capital={country.capital} />}
         </>
         :
         <p>{country.name} <button onClick={() => setShow(!show)}>show</button></p>
